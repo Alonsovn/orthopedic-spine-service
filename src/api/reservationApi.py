@@ -21,7 +21,7 @@ async def get_reservation_by_id(reservation_id: int):
     raise HTTPException(status_code=404, detail="Reservation not found")
 
 
-@router.post("/post")
+@router.post("/create")
 async def create_reservation(reservation: ReservationModel):
     reservations.append(reservation)
 
