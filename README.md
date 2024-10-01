@@ -1,1 +1,4 @@
-# orthopedic-spine-service
+# orthopedic-spine-service 
+
+module: uvicorn
+src.main:app --reload
