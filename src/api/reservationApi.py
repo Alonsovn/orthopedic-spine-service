@@ -4,7 +4,7 @@ from src.utils.logUtil import log
 
 router = APIRouter()
 
-reservations = [ReservationModel(123, "reservation1", "email1@gmail.com", "message1")]
+reservations = [ReservationModel()]
 
 
 @router.get("/all")
@@ -23,6 +23,7 @@ async def get_reservation_by_id(reservation_id: int):
 
 @router.post("/create")
 async def create_reservation(reservation: ReservationModel):
+    log.info(f"Creating reservation: {reservation}")
     reservations.append(reservation)
 
     return reservation
