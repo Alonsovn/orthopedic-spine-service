@@ -1,9 +1,11 @@
 from typing import List
+from fastapi import APIRouter, status, Depends
 
-from fastapi import APIRouter, status
-
+from src.database.postgresSql import get_db
+from src.model.testimonialModel import TestimonialModel
 from src.schema.testimonialSchema import TestimonialCreate, TestimonialResponse
 from src.utils.logUtil import log
+from sqlalchemy.orm import Session
 
 router = APIRouter()
 
@@ -82,20 +84,21 @@ mock_testimonials = [
 
 
 @router.get("/all", response_model=List[TestimonialResponse])
-async def get_all_testimonials():
+async def get_all_testimonials(db: Session = Depends(get_db)):
     try:
-        return mock_testimonials
+        return db.query(TestimonialModel).order_by(TestimonialModel.rating.desc()).all()
 
     except Exception as e:
         log.info(f"Error getting testimonials. Exception: {e}")
 
 
 @router.post("/", response_model=TestimonialResponse, status_code=status.HTTP_201_CREATED)
-async def create_testimonial(testimonial: TestimonialCreate):
+async def create_testimonial(testimonial: TestimonialCreate, db: Session = Depends(get_db)):
     try:
-        new_id = len(mock_testimonials) + 1
-        new_testimonial = {"id": new_id, **testimonial.model_dump()}
-        mock_testimonials.append(new_testimonial)
+        new_testimonial = TestimonialModel(**testimonial.model_dump())
+        db.add(new_testimonial)
+        db.commit()
+        db.refresh(new_testimonial)
 
         return new_testimonial
 
