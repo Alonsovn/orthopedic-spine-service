@@ -1,6 +1,9 @@
 fastapi~=0.109.1
+uvicorn
 pydantic~=2.10.6
 email-validator==2.2.0
 aiosmtplib==4.0.0
 python-dotenv==1.0.1
 starlette
+sqlalchemy
+psycopg2-binary
