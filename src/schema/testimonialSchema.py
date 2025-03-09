@@ -1,4 +1,5 @@
 from pydantic import BaseModel, Field
+import uuid
 
 
 class TestimonialCreate(BaseModel):
@@ -9,4 +10,7 @@ class TestimonialCreate(BaseModel):
 
 
 class TestimonialResponse(TestimonialCreate):
-    id: int
+    id: uuid.UUID
+
+    class Config:
+        from_attributes: True
