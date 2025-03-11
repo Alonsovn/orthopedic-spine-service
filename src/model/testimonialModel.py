@@ -3,7 +3,7 @@ from sqlalchemy.dialects.postgresql import UUID
 
 from sqlalchemy import Column, Integer, String, DateTime, func
 
-from src.database.postgresSql import Base
+from src.database.postgres import Base
 
 
 class TestimonialModel(Base):
