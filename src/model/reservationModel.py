@@ -1,8 +1,9 @@
 from pydantic import BaseModel
+import uuid
 
 
 class ReservationModel(BaseModel):
-    reservation_id: int = 123
+    reservation_id: uuid.UUID
     name: str = ""
     phoneNumber: str = ""
     email: str = ""
