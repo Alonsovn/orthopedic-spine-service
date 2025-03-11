@@ -1,6 +1,8 @@
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
+from src.database.postgres import init_db
 from src.utils.logUtil import log, console_logging_config
 from src.api import userApi, reservationApi, emailApi, testimonialApi
 
@@ -21,6 +23,8 @@ app.add_middleware(
 
 def init_application():
     console_logging_config()
+    load_dotenv()
+    init_db()
 
     log.info("Starting application!")
 
@@ -36,8 +40,7 @@ def get_health_check():
 
 
 app.include_router(userApi.router, prefix="/user", tags=["user"])
-app.include_router(reservationApi.router, prefix="/reservation", tags=["reservation"])
+# app.include_router(reservationApi.router, prefix="/reservation", tags=["reservation"])
 
 app.include_router(emailApi.router, prefix="/email", tags=["email"])
 app.include_router(testimonialApi.router, prefix="/testimonial", tags=["testimonial"])
-

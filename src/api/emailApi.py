@@ -21,7 +21,7 @@ async def send_email(payload: EmailSchema):
     try:
         msg = MIMEText(payload.message)
         msg["Subject"] = payload.subject
-        msg["From"] = payload.from_user
+        msg["From"] = payload.fromUser
         msg["To"] = EMAIL_USERNAME
 
         log.info(f"Email: {msg}")
