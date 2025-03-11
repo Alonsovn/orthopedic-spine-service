@@ -27,10 +27,10 @@ def get_all_testimonials(db: Session):
 
 
 @backoff.on_exception(
-    backoff.expo,  # Exponential backoff strategy
-    OperationalError,  # Type of exception to retry on
-    max_tries=3,  # Maximum retries
-    on_backoff=backoff_handler  # Log or handle retry attempt
+    backoff.expo,
+    OperationalError,
+    max_tries=3,
+    on_backoff=backoff_handler
 )
 def create_testimonial(testimonial: TestimonialCreate, db: Session):
     log.info("Start creating testimonial in db")
