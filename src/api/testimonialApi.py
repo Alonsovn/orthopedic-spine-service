@@ -1,7 +1,7 @@
 from typing import List
-from fastapi import APIRouter, status, Depends
+from fastapi import APIRouter, status, Depends, HTTPException
 
-from src.database.postgresSql import get_db
+from src.database.postgres import get_db
 from src.model.testimonialModel import TestimonialModel
 from src.schema.testimonialSchema import TestimonialCreate, TestimonialResponse
 from src.utils.logUtil import log
@@ -86,16 +86,29 @@ mock_testimonials = [
 @router.get("/all", response_model=List[TestimonialResponse])
 async def get_all_testimonials(db: Session = Depends(get_db)):
     try:
-        return db.query(TestimonialModel).order_by(TestimonialModel.rating.desc()).all()
+        testimonials = db.query(TestimonialModel).order_by(TestimonialModel.rating.desc()).all()
+
+        if not testimonials:
+            log.info("No testimonials found.")
+            return []
+
+        # Convert SQLAlchemy objects to Pydantic models
+        return [TestimonialResponse.model_validate(testimonial) for testimonial in testimonials]
 
     except Exception as e:
-        log.info(f"Error getting testimonials. Exception: {e}")
+        log.error(f"Error getting testimonials. Exception: {e}", exc_info=True)
+        return []
 
 
 @router.post("/", response_model=TestimonialResponse, status_code=status.HTTP_201_CREATED)
 async def create_testimonial(testimonial: TestimonialCreate, db: Session = Depends(get_db)):
     try:
-        new_testimonial = TestimonialModel(**testimonial.model_dump())
+        new_testimonial = TestimonialModel(
+            first_name=testimonial.firstName,
+            last_name=testimonial.lastName,
+            rating=testimonial.rating,
+            comment=testimonial.comment
+        )
         db.add(new_testimonial)
         db.commit()
         db.refresh(new_testimonial)
@@ -103,4 +116,8 @@ async def create_testimonial(testimonial: TestimonialCreate, db: Session = Depen
         return new_testimonial
 
     except Exception as e:
-        log.info(f"Error creating testimonial. Exception: {e}")
+        db.rollback()
+        log.error(f"Error creating testimonial. Exception: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail="Internal Server Error")
+    finally:
+        db.close()
