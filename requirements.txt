@@ -8,3 +8,4 @@ starlette
 sqlalchemy
 psycopg2-binary
 gunicorn
+backoff
