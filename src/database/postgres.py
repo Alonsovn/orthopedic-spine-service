@@ -1,9 +1,12 @@
 import os
 
+import backoff
 from sqlalchemy import create_engine
+from sqlalchemy.exc import OperationalError
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
+from src.utils.backoff_helper import backoff_handler
 
 db_username = "admin"
 db_password = os.getenv("POSTGRES_PASSWORD")
@@ -20,10 +23,12 @@ Base = declarative_base()
 
 
 # Create tables if they don't exist
+
 def init_db():
     Base.metadata.create_all(bind=engine)
 
 
+@backoff.on_exception(backoff.expo, OperationalError, max_tries=5, on_backoff=backoff_handler)
 def get_db():
     db = SessionLocal()
     try:

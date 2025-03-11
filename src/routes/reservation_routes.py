@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException
-from src.model.reservationModel import ReservationModel
+from src.models.reservation import ReservationModel
 from src.utils.logUtil import log
 
 router = APIRouter()

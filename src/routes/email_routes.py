@@ -4,7 +4,7 @@ import smtplib
 from fastapi import APIRouter
 from email.mime.text import MIMEText
 
-from src.schema.emailSchema import EmailSchema
+from src.schemas.email import EmailSchema
 from src.utils.logUtil import log
 
 router = APIRouter()
