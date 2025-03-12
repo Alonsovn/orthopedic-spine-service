@@ -7,6 +7,7 @@ from src.routes import email_routes, testimonial_routes
 from src.utils.logUtil import log, console_logging_config
 
 from src.routes import router as api_router
+
 app = FastAPI(title="Orthopedic Spine Service")
 
 origins = [
@@ -24,7 +25,6 @@ app.add_middleware(
 
 def init_application():
     console_logging_config()
-    load_dotenv()
     init_db()
     log.info("Starting application!")
 
@@ -40,4 +40,3 @@ def get_health_check():
 
 
 app.include_router(api_router)
-
