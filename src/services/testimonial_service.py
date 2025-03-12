@@ -51,8 +51,8 @@ def create_testimonial(testimonial: TestimonialCreate, db_session: Session) -> T
 
     try:
         new_testimonial = TestimonialModel(
-            first_name=testimonial.firstName,
-            last_name=testimonial.lastName,
+            first_name=testimonial.first_name,
+            last_name=testimonial.last_name,
             rating=testimonial.rating,
             comment=testimonial.comment
         )
