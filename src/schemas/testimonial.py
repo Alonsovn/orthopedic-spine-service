@@ -1,21 +1,33 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, model_validator
 import uuid
+from datetime import datetime
 
 
 class TestimonialCreate(BaseModel):
-    firstName: str = Field(..., example="First name")
-    lastName: str = Field(..., example="Last name")
+    firstName: str = Field(..., max_length=255, example="First name")
+    lastName: str = Field(..., max_length=255, example="Last name")
     rating: int = Field(..., ge=1, le=5, example=5)
-    comment: str = Field(..., example="Great service!")
+    comment: str = Field(..., max_length=1000, example="Great service!")
 
 
 class TestimonialResponse(BaseModel):
     id: uuid.UUID
-    firstName: str = Field(..., alias="first_name")
-    lastName: str = Field(..., alias="last_name")
+    first_name: str = Field(..., alias="firstName")
+    last_name: str = Field(..., alias="lastName")
     rating: int
     comment: str
+    created_at: str = Field(..., alias="createdAt")
+    updated_at: str = Field(..., alias="UpdatedAt")
+
+    @model_validator(mode="before")
+    def validate_dates(cls, values):
+        # Ensure datetime fields are converted to string
+        if 'created_at' in values and isinstance(values['created_at'], datetime):
+            values['created_at'] = values['created_at'].isoformat()  # Convert to string
+        if 'updated_at' in values and isinstance(values['updated_at'], datetime):
+            values['updated_at'] = values['updated_at'].isoformat()  # Convert to string
+        return values
 
     class Config:
         from_attributes = True
-        populate_by_name = True  # Allows FastAPI to map snake_case from DB
+        populate_by_name = True  # Maps snake_case to camelCase when needed
