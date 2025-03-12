@@ -5,7 +5,7 @@ app:
 postgres:
   username: "admin"
   password: !ENV ${POSTGRES_PASSWORD}
-  host: "localhost"
+  host: "postgres"
   port: 5432
   dbname: "orthopedic_spine_db"
   echo: false  # SQLAlchemy echo logs
@@ -13,5 +13,4 @@ postgres:
 email:
   address: "orthopedicspineinfo@gmail.com"
   password: !ENV ${EMAIL_PASSWORD}
-
 
