@@ -1,7 +1,7 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, EmailStr
 
 
 class EmailSchema(BaseModel):
-    fromUser: str
+    fromUser: EmailStr
     subject: str
     message: str
