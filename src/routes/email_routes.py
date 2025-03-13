@@ -1,7 +1,7 @@
 import os
 import smtplib
 
-from fastapi import APIRouter
+from fastapi import APIRouter, status
 from email.mime.text import MIMEText
 
 from src.core.app_config import AppConfig
@@ -19,7 +19,7 @@ EMAIL_USERNAME = email_config.get("address")
 EMAIL_PASSWORD = email_config.get("password")
 
 
-@router.post("/send-email")
+@router.post("/send-email", status_code=status.HTTP_201_CREATED)
 async def send_email(payload: EmailSchema):
     try:
         msg = MIMEText(payload.message)
@@ -35,7 +35,7 @@ async def send_email(payload: EmailSchema):
 
         log.info("Email sent successfully")
 
-        return {"message": "Email sent successfully"}
+        return {"success": "Error Email sent successfully"}
 
     except Exception as e:
         log.info(f"Error sending email. Exception: {e}")
