@@ -4,16 +4,19 @@ import smtplib
 from fastapi import APIRouter
 from email.mime.text import MIMEText
 
+from src.core.app_config import AppConfig
 from src.schemas.email import EmailSchema
 from src.utils.logUtil import log
 
 router = APIRouter()
 
+email_config: dict = AppConfig().config.get("email")
+
 # Email configuration
-SMTP_SERVER = "smtp.gmail.com"
-SMTP_PORT = 465
-EMAIL_USERNAME = os.getenv("EMAIL_USERNAME")  # Your Gmail address
-EMAIL_PASSWORD = os.getenv("EMAIL_PASSWORD")  #
+SMTP_SERVER = email_config.get("smtpServer")
+SMTP_PORT = email_config.get("smtpPort")
+EMAIL_USERNAME = email_config.get("address")
+EMAIL_PASSWORD = email_config.get("password")
 
 
 @router.post("/send-email")
