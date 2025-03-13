@@ -11,6 +11,7 @@ postgres:
   echo: false  # SQLAlchemy echo logs
 
 email:
+  smtpServer: "smtp.gmail.com"
+  smtpPort: 465
   address: "orthopedicspineinfo@gmail.com"
   password: !ENV ${EMAIL_PASSWORD}
-
