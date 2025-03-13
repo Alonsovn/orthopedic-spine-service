@@ -2,29 +2,31 @@ version: "3.8"
 
 services:
   app:
-    container_name: orthopedic_spine_service
+    container_name: orthopedic_spine_service_app
     build:
       context: .
-    restart: always
+    restart: unless-stopped
     depends_on:
       - postgres
     env_file:
-      - ${PWD}/.env
+      - .env
     environment:
-      DATABASE_URL: postgresql://admin:admin@db:5432/orthopedic_spine_db
+        APP_ENV: container
     ports:
       - "8080:8080"
 
   postgres:
     image: postgres:15
-    container_name: postgres
-    restart: always
+    container_name: orthopedic_spine_service_db
+    restart: unless-stopped
     environment:
       POSTGRES_USER: admin
-      POSTGRES_PASSWORD: admin
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DB: orthopedic_spine_db
     ports:
       - "5432:5432"
+    env_file:
+      - .env
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
