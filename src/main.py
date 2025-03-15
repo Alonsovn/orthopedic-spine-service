@@ -1,9 +1,9 @@
-from dotenv import load_dotenv
+import subprocess
+
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 
 from src.database.postgres import init_db
-from src.routes import email_routes, testimonial_routes
 from src.utils.logUtil import log, console_logging_config
 
 from src.routes import router as api_router
@@ -25,14 +25,23 @@ app.add_middleware(
 
 def init_application():
     console_logging_config()
+    run_db_migrations()
     init_db()
-    log.info("Starting application!")
 
 
 @app.on_event("startup")
 async def init_app():
+    log.info("Starting application!")
     init_application()
 
+
+def run_db_migrations():
+    try:
+        log.info("Running alembic migrations..")
+        subprocess.run(["alembic", "upgrade", "head"], check=True)
+        log.info("Database migrations applied successfully.")
+    except subprocess.CalledProcessError as e:
+        log.error(f"Error applying migrations. Exception:  {str(e)}")
 
 @app.get("/health")
 def get_health_check():
