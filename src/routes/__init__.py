@@ -1,13 +1,11 @@
 from fastapi import APIRouter
 
-from .email_routes import router as email_router
-from .testimonial_routes import router as testimonial_router
-
+from src.routes import email_routes, testimonial_routes, user_routes
 
 # Create a main router to include all route modules
 router = APIRouter()
 
 # Include individual routers
-router.include_router(email_router, prefix="/email", tags=["email"])
-router.include_router(testimonial_router, prefix="/testimonial", tags=["testimonial"])
-
+router.include_router(email_routes.router, prefix="/email", tags=["email"])
+router.include_router(testimonial_routes.router, prefix="/testimonial", tags=["testimonial"])
+router.include_router(user_routes.router, prefix="/user", tags=["user"])
