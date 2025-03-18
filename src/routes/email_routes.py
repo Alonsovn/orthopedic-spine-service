@@ -1,10 +1,11 @@
 import os
 import smtplib
 
-from fastapi import APIRouter, status
+from fastapi import APIRouter, status, Depends
 from email.mime.text import MIMEText
 
 from src.core.app_config import AppConfig
+from src.dependencies.auth_dependency import get_current_user
 from src.schemas.email import EmailSchema
 from src.utils.logUtil import log
 
@@ -20,7 +21,7 @@ EMAIL_PASSWORD = email_config.get("password")
 
 
 @router.post("/send-email", status_code=status.HTTP_201_CREATED)
-async def send_email(payload: EmailSchema):
+async def send_email(payload: EmailSchema, current_user: str = Depends(get_current_user)):
     try:
         msg = MIMEText(payload.message)
         msg["Subject"] = payload.subject
@@ -35,7 +36,7 @@ async def send_email(payload: EmailSchema):
 
         log.info("Email sent successfully")
 
-        return {"success": "Error Email sent successfully"}
+        return {"success": "Email sent successfully"}
 
     except Exception as e:
         log.info(f"Error sending email. Exception: {e}")
