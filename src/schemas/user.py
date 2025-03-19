@@ -1,9 +1,11 @@
+from typing import Optional
+
 from pydantic import BaseModel, EmailStr
 
 
 class UserCreate(BaseModel):
     email: EmailStr
-    password: str
+    password: str  # TODO validate password
 
 
 class UserLogin(BaseModel):
@@ -14,3 +16,4 @@ class UserLogin(BaseModel):
 class UserToken(BaseModel):
     access_token: str
     token_type: str
+    refresh_token: Optional[str] = None
