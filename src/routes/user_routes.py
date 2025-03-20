@@ -5,7 +5,8 @@ from sqlalchemy.orm import Session
 
 from src.database.postgres import get_db
 from src.schemas.user import UserToken, UserCreate, UserLogin
-from src.services.auth_service import generate_access_token, verify_access_token
+from src.services.auth_service import verify_access_token, \
+    generate_user_access_token
 from src.services.user_service import register_user, login_user, get_user_by_email
 from src.utils.logUtil import log
 
@@ -24,8 +25,9 @@ async def register(user: UserCreate, db: Session = Depends(get_db)):
         log.error("User registration failed due to a database issue")
         raise HTTPException(status_code=500, detail="Database error: Could not register the user")
 
-    user_access_token = generate_access_token(registered_user)
     log.info(f"User {user.email} registered successfully")
+
+    user_access_token = generate_user_access_token(registered_user)
 
     return user_access_token
 
@@ -39,8 +41,9 @@ async def login(user: UserLogin, db: Session = Depends(get_db)):
         log.warning(f"Login failed for user {user.email}: Invalid credentials")
         raise HTTPException(status_code=401, detail="invalid credentials")
 
-    user_access_token = generate_access_token(logged_user)
     log.info(f"User {user.email} logged in successfully")
+
+    user_access_token = generate_user_access_token(logged_user)
 
     return user_access_token
 
@@ -63,8 +66,8 @@ async def refresh_token(db: Session = Depends(get_db), token: str = Depends(oaut
             log.warning(f"User with email {user_email} not found.")
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
-        new_access_token = generate_access_token(user_db)
         log.info(f"Successfully refreshed token for user: {user_email}")
+        new_access_token = generate_user_access_token(user_db)
 
         return new_access_token
 
