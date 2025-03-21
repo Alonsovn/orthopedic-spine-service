@@ -2,12 +2,12 @@ from fastapi import HTTPException
 from sqlalchemy.orm import Session
 
 from src.models.user import UserModel
-from src.schemas.user import UserCreate, UserLogin
+from src.schemas.user import UserCreateRequest, UserLoginRequest
 from src.services.auth_service import hash_password, verify_password
 from src.utils.logUtil import log
 
 
-def register_user(user: UserCreate, db: Session):
+def register_user(user: UserCreateRequest, db: Session):
     log.info(f"Registering user with email: {user.email}")
 
     existing_user = get_user_by_email(user.email, db)
@@ -36,7 +36,7 @@ def register_user(user: UserCreate, db: Session):
         raise HTTPException(status_code=500, detail="Database error: Could not register the user")
 
 
-def login_user(user: UserLogin, db: Session):
+def login_user(user: UserLoginRequest, db: Session):
     log.info(f"User login attempt: {user.email}")
 
     db_user = get_user_by_email(user.email, db)

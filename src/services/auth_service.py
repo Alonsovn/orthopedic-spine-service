@@ -6,7 +6,7 @@ from fastapi import HTTPException, status
 
 from src.core.app_config import AppConfig
 from src.models.user import UserModel
-from src.schemas.user import UserToken
+from src.schemas.user import UserTokenResponse
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -29,7 +29,7 @@ def generate_user_access_token(user: UserModel):
     user_access_token = generate_access_token(user)
     user_refresh_token = generate_refresh_token(user)
 
-    user_access_token = {"access_token": user_access_token, "token_type": "bearer", "refresh_token": user_refresh_token}
+    user_access_token = {"accessToken": user_access_token, "tokenType": "bearer", "refreshToken": user_refresh_token}
 
     return user_access_token
 
