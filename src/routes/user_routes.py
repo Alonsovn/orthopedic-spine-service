@@ -4,7 +4,7 @@ from jose import JWTError
 from sqlalchemy.orm import Session
 
 from src.database.postgres import get_db
-from src.schemas.user import UserToken, UserCreate, UserLogin
+from src.schemas.user import UserTokenResponse, UserCreateRequest, UserLoginRequest, RefreshTokenRequest
 from src.services.auth_service import verify_access_token, \
     generate_user_access_token
 from src.services.user_service import register_user, login_user, get_user_by_email
@@ -16,8 +16,8 @@ router = APIRouter()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
 
-@router.post("/register", response_model=UserToken)
-async def register(user: UserCreate, db: Session = Depends(get_db)):
+@router.post("/register", response_model=UserTokenResponse)
+async def register(user: UserCreateRequest, db: Session = Depends(get_db)):
     log.info(f"Attempting to register user with email: {user.email}")
 
     registered_user = register_user(user, db)
@@ -32,8 +32,8 @@ async def register(user: UserCreate, db: Session = Depends(get_db)):
     return user_access_token
 
 
-@router.post("/login", response_model=UserToken)
-async def login(user: UserLogin, db: Session = Depends(get_db)):
+@router.post("/login", response_model=UserTokenResponse)
+async def login(user: UserLoginRequest, db: Session = Depends(get_db)):
     log.info(f"Attempting login for user: {user.email}")
 
     logged_user = login_user(user, db)
@@ -48,13 +48,13 @@ async def login(user: UserLogin, db: Session = Depends(get_db)):
     return user_access_token
 
 
-@router.post("/refresh-token", response_model=UserToken)
-async def refresh_token(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+@router.post("/refresh-token", response_model=UserTokenResponse)
+async def refresh_token(refresh_token_request: RefreshTokenRequest, db: Session = Depends(get_db)):
     log.info("Attempting to refresh token")
 
     try:
         # Validate the token and extract user info
-        payload = verify_access_token(token)
+        payload = verify_access_token(refresh_token_request.refresh_token)
         user_email = payload.get("sub")
 
         if not user_email:
