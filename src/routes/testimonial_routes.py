@@ -12,7 +12,7 @@ router = APIRouter()
 
 
 @router.get("/all", response_model=List[TestimonialResponse])
-async def fetch_all_testimonials(db_session: Session = Depends(get_db), current_user: str = Depends(get_current_user)):
+async def fetch_all_testimonials(db_session: Session = Depends(get_db)):
     testimonials = get_all_testimonials(db_session)
 
     if not testimonials:
