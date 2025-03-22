@@ -6,7 +6,7 @@ from sqlalchemy.orm import Session
 from src.database.postgres import get_db
 from src.schemas.user import UserTokenResponse, UserCreateRequest, UserLoginRequest, RefreshTokenRequest
 from src.services.auth_service import verify_access_token, \
-    generate_user_access_token
+    generate_user_access_token, generate_access_token
 from src.services.user_service import register_user, login_user, get_user_by_email
 from src.utils.logUtil import log
 
@@ -67,7 +67,9 @@ async def refresh_token(refresh_token_request: RefreshTokenRequest, db: Session 
             raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
         log.info(f"Successfully refreshed token for user: {user_email}")
-        new_access_token = generate_user_access_token(user_db)
+        access_token = generate_access_token(user_db)
+        new_access_token = {"accessToken": access_token, "tokenType": "bearer",
+                            "refreshToken": refresh_token_request}
 
         return new_access_token
 
