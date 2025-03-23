@@ -62,6 +62,7 @@ class EmailService:
             email_message["To"] = email_to
 
             log.info("Code verification email sent successfully")
+            self.send_email(email_message)
 
             return verification_code
 
