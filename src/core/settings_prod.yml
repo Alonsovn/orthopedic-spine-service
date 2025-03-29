@@ -1,0 +1,19 @@
+app:
+  name: "Orthopedic Spine Service"
+  debug: false
+
+postgres:
+  username: "admin"
+  password: !ENV ${POSTGRES_PASSWORD}
+  host: "localhost"
+  port: 5432
+  dbname: "orthopedic_spine_db"
+  echo: false  # SQLAlchemy echo logs
+
+email:
+  smtpServer: "smtp.gmail.com"
+  smtpPort: 465
+  address: "orthopedicspineinfo@gmail.com"
+  password: !ENV ${EMAIL_PASSWORD}
+
+
