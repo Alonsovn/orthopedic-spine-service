@@ -11,7 +11,7 @@ from src.routes import router as api_router
 app = FastAPI(title="Orthopedic Spine Service")
 
 origins = [
-    "http://localhost",  # Add your React app's URL here
+    "http://localhost:5173",  # Add your React app's URL here
 ]
 
 app.add_middleware(
