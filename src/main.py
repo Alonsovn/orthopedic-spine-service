@@ -8,7 +8,7 @@ from src.utils.logUtil import log, console_logging_config
 
 from src.routes import router as api_router
 
-app = FastAPI(title="Orthopedic Spine Service")
+app = FastAPI(title="Orthopedic Spine Service", root_path="/api")
 
 origins = [
     "http://localhost:5173",  # Add your React app's URL here
