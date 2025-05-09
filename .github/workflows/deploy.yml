@@ -9,7 +9,7 @@ env:
   AWS_REGION: us-east-1
   ECR_REPOSITORY: orthopedic-spine-service
   ECS_CLUSTER: clinic-cluster
-  ECS_SERVICE: backend-service
+  ECS_SERVICE: clinic-backend-service
   CONTAINER_NAME: backend
 
 jobs:
